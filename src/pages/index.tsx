@@ -6,7 +6,6 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center h-full w-full  ">
       <Navbar />
       <Registration />
-      {/* <Login /> */}
     </div>
   );
 }

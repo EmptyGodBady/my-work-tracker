@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -11,11 +12,39 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
 export default function Registration() {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const data = {
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      login: formData.get("login"),
+      password: formData.get("password"),
+    };
+
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (res.ok) {
+      console.log(res);
+      alert("Rejestracja przebiegła pomyślnie!");
+      form.reset();
+    } else {
+      console.log(res);
+      const json = await res.json();
+      alert(`Błąd: ${json.message}`);
+    }
+  }
+
   return (
-    <Card className="w-[350px] max-w-md  mx-4 bg-[#157F1F] text-white mt-16 sm:mt-24 md:mt-32 md:w-full">
+    <Card className="w-[350px] max-w-md mx-4 bg-[#157F1F] text-white mt-16 sm:mt-24 md:mt-32 md:w-full">
       <CardHeader>
         <CardTitle>Rejestracja</CardTitle>
-
         <CardAction>
           <Button variant="link" className="text-white">
             Zaloguj się
@@ -23,20 +52,33 @@ export default function Registration() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="name">Imię</Label>
-              <Input id="name" type="text" placeholder="Katarzyna" required />
+              <Label htmlFor="firstName">Imię</Label>
+              <Input
+                id="firstName"
+                name="firstName"
+                type="text"
+                placeholder="Katarzyna"
+                required
+              />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="surname">Nazwisko</Label>
-              <Input id="surname" type="text" placeholder="Kowalska" required />
+              <Label htmlFor="lastName">Nazwisko</Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="Kowalska"
+                required
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="login">Login</Label>
               <Input
                 id="login"
+                name="login"
                 type="text"
                 placeholder="Katarzyna123"
                 required
@@ -46,19 +88,17 @@ export default function Registration() {
               <div className="flex items-center">
                 <Label htmlFor="password">Hasło</Label>
               </div>
-              <Input id="password" type="password" required />
+              <Input id="password" name="password" type="password" required />
             </div>
           </div>
+          <Button
+            type="submit"
+            className="w-full bg-white text-black hover:bg-gray-200"
+          >
+            Zarejestruj się
+          </Button>
         </form>
       </CardContent>
-      <CardFooter className="flex-col gap-2">
-        <Button
-          type="submit"
-          className="w-full bg-white text-black hover:bg-gray-200"
-        >
-          Zarejestruj się
-        </Button>
-      </CardFooter>
     </Card>
   );
 }
