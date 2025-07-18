@@ -1,11 +1,9 @@
 import Navbar from "@/components/navbar";
-import Registration from "@/components/registration";
 
-export default function Home() {
+export default function Main() {
   return (
     <div className="flex flex-col items-center justify-center h-full w-full  ">
       <Navbar />
-      <Registration />
     </div>
   );
 }

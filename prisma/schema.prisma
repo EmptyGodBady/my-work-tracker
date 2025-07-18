@@ -13,3 +13,26 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int        @id @default(autoincrement())
+  firstName String
+  lastName  String
+  login     String     @unique
+  password  String
+  workHours WorkHour[]
+  createdAt DateTime   @default(now())
+}
+
+model WorkHour {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  day       Int
+  month     Int
+  year      Int
+  hours     Float
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
