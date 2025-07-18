@@ -10,7 +10,7 @@ import {
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function Login() {
+export default function LoginForm() {
   return (
     <Card className="w-[350px] max-w-md  mx-4 bg-[#157F1F] text-white mt-16 sm:mt-24 md:mt-32 md:w-full">
       <CardHeader>

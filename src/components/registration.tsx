@@ -10,8 +10,10 @@ import {
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { useRouter } from "next/navigation";
 
 export default function Registration() {
+  const router = useRouter();
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
@@ -32,12 +34,13 @@ export default function Registration() {
 
     if (res.ok) {
       console.log(res);
-      alert("Rejestracja przebiegła pomyślnie!");
       form.reset();
+      // TODO: Add toast notification
+      router.push("/dashboard");
     } else {
       console.log(res);
       const json = await res.json();
-      alert(`Błąd: ${json.message}`);
+      // TODO: Add toast notification
     }
   }
 
