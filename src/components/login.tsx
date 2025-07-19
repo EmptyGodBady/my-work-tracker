@@ -1,34 +1,61 @@
+import { useRouter } from "next/router";
 import { Button } from "./ui/button";
 import {
   Card,
   CardAction,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import Link from "next/link";
 
 export default function LoginForm() {
+  const router = useRouter();
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const data = {
+      login: formData.get("login"),
+      password: formData.get("password"),
+    };
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      console.log(res);
+      form.reset();
+      // TODO: Add toast notification
+      router.push("/dashboard");
+    } else {
+      console.log(res);
+      const json = await res.json();
+      // TODO: Add toast notification
+    }
+  }
   return (
     <Card className="w-[350px] max-w-md  mx-4 bg-[#157F1F] text-white mt-16 sm:mt-24 md:mt-32 md:w-full">
       <CardHeader>
         <CardTitle>Zaloguj się</CardTitle>
-
         <CardAction>
-          <Button variant="link" className="text-white">
-            Zarejestruj się
+          <Button variant="link" className="text-white" asChild>
+            <Link href="/">Zarejestruj się</Link>
           </Button>
         </CardAction>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="login">Login</Label>
               <Input
                 id="login"
+                name="login"
                 type="text"
                 placeholder="Katarzyna123"
                 required
@@ -38,19 +65,17 @@ export default function LoginForm() {
               <div className="flex items-center">
                 <Label htmlFor="password">Hasło</Label>
               </div>
-              <Input id="password" type="password" required />
+              <Input id="password" name="password" type="password" required />
             </div>
           </div>
+          <Button
+            type="submit"
+            className="w-full bg-white text-black hover:bg-gray-200 mt-4"
+          >
+            Zaloguj się
+          </Button>
         </form>
       </CardContent>
-      <CardFooter className="flex-col gap-2">
-        <Button
-          type="submit"
-          className="w-full bg-white text-black hover:bg-gray-200"
-        >
-          Zaloguj się
-        </Button>
-      </CardFooter>
     </Card>
   );
 }
