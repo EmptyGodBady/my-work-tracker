@@ -10,7 +10,6 @@ export function signToken(payload: object) {
 }
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 export async function verifyToken(token: string) {
-  console.log("JWT_SECRET:", process.env.JWT_SECRET);
   try {
     const { payload } = await jwtVerify(token, secret);
     return payload;

@@ -15,6 +15,7 @@ export default async function handler(
     const { login, password } = req.body;
 
     if (!login || !password) {
+      console.log(login, password);
       return res.status(400).json({ message: "Wszystkie pola są wymagane" });
     }
 

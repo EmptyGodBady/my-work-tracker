@@ -4,13 +4,13 @@ import {
   Card,
   CardAction,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Registration() {
   const router = useRouter();
@@ -49,8 +49,8 @@ export default function Registration() {
       <CardHeader>
         <CardTitle>Rejestracja</CardTitle>
         <CardAction>
-          <Button variant="link" className="text-white">
-            Zaloguj się
+          <Button variant="link" className="text-white" asChild>
+            <Link href="/login">Zaloguj się</Link>
           </Button>
         </CardAction>
       </CardHeader>
@@ -96,7 +96,7 @@ export default function Registration() {
           </div>
           <Button
             type="submit"
-            className="w-full bg-white text-black hover:bg-gray-200"
+            className="w-full bg-white text-black hover:bg-gray-200 mt-4"
           >
             Zarejestruj się
           </Button>

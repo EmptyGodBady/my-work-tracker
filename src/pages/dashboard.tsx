@@ -6,7 +6,7 @@ export default function Dashboard() {
   const numbers = [1, 2, 3, 4, 5];
   return (
     <div className="flex flex-col items-center justify-center h-full w-full">
-      <Navbar />
+      <Navbar isAuth={true} />
       <div className="flex flex-col  justify-center h-full gap-2 max-w-[80%] md:w-full w-[350px] pt-32">
         <div className=" flex  ">
           <Clock className="w-6 h-6 mr-2" /> Moje Godziny
