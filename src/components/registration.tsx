@@ -11,9 +11,14 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { login } from "@/store/userSlice";
 
 export default function Registration() {
   const router = useRouter();
+  const dispatch = useDispatch();
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
@@ -35,17 +40,18 @@ export default function Registration() {
     if (res.ok) {
       console.log(res);
       form.reset();
-      // TODO: Add toast notification
+      toast("Zarejestrowano");
       router.push("/dashboard");
+      dispatch(login(data.login as string));
     } else {
       console.log(res);
       const json = await res.json();
-      // TODO: Add toast notification
+      toast("Wszystkie pola są wymagane");
     }
   }
 
   return (
-    <Card className="w-[350px] max-w-md mx-4 bg-[#157F1F] text-white mt-16 sm:mt-24 md:mt-32 md:w-full">
+    <Card className="w-[350px] max-w-[400px] mx-4 bg-[#157F1F] text-white mt-16 sm:mt-24 md:mt-32 md:w-full ">
       <CardHeader>
         <CardTitle>Rejestracja</CardTitle>
         <CardAction>
