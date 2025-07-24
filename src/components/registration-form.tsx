@@ -12,12 +12,9 @@ import { Label } from "./ui/label";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { useDispatch } from "react-redux";
-import { login } from "@/store/userSlice";
 
-export default function Registration() {
+export default function RegistrationForm() {
   const router = useRouter();
-  const dispatch = useDispatch();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -38,15 +35,11 @@ export default function Registration() {
     });
 
     if (res.ok) {
-      console.log(res);
       form.reset();
-      toast("Zarejestrowano");
+      toast.success("Zarejestrowano");
       router.push("/dashboard");
-      dispatch(login(data.login as string));
     } else {
-      console.log(res);
-      const json = await res.json();
-      toast("Wszystkie pola są wymagane");
+      toast.error("Wszystkie pola są wymagane");
     }
   }
 
@@ -56,7 +49,7 @@ export default function Registration() {
         <CardTitle>Rejestracja</CardTitle>
         <CardAction>
           <Button variant="link" className="text-white" asChild>
-            <Link href="/login">Zaloguj się</Link>
+            <Link href="/">Zaloguj się</Link>
           </Button>
         </CardAction>
       </CardHeader>

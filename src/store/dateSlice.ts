@@ -16,13 +16,13 @@ export const dateSlice = createSlice({
   name: "date",
   initialState,
   reducers: {
-    selectMonth(state, action: PayloadAction<number>) {
+    setMonth(state, action: PayloadAction<number>) {
       state.month = action.payload;
     },
-    selectYear(state, action: PayloadAction<number>) {
+    setYear(state, action: PayloadAction<number>) {
       state.year = action.payload;
     },
-    selectDays(state, action: PayloadAction<number>) {
+    setDays(state, action: PayloadAction<number>) {
       state.days = action.payload;
     },
     clearDate(state) {
@@ -33,6 +33,5 @@ export const dateSlice = createSlice({
   },
 });
 
-export const { selectMonth, selectYear, selectDays, clearDate } =
-  dateSlice.actions;
+export const { setMonth, setYear, setDays, clearDate } = dateSlice.actions;
 export default dateSlice.reducer;

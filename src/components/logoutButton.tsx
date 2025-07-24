@@ -9,14 +9,19 @@ import { clearDate } from "@/store/dateSlice";
 export default function logoutButton() {
   const router = useRouter();
   const dispatch = useDispatch();
+
   async function handleSubmit() {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-    });
-    toast.success("Wylogowano");
-    dispatch(logout());
-    dispatch(clearDate());
-    router.push("/login");
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+      toast.success("Wylogowano");
+      dispatch(logout());
+      dispatch(clearDate());
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
