@@ -1,3 +1,4 @@
+import MonthList from "@/components/monthList";
 import MonthPicker from "@/components/monthPicker";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
@@ -8,33 +9,52 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import YearPicker from "@/components/yearPicker";
-import { RootState } from "@/store";
-import { selectDays, selectMonth, selectYear } from "@/store/dateSlice";
+import { AppDispatch, RootState } from "@/store";
+import { clearDate } from "@/store/dateSlice";
+import fetchAndFillAllUserData from "@/store/thunks/fetchAndFillUserData";
+import setCurrentDate from "@/store/thunks/setCurrentDate";
 import { Clock, Plus } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
-  const [month, setMonth] = useState<number>();
-  const [year, setYear] = useState<number>();
+  const [CurrentMonth, setCurrentMonth] = useState<number>();
+  const [CurrentYear, setCurrentYear] = useState<number>();
 
-  const { userLogin } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const userFirstName = useSelector(
+    (state: RootState) => state.user.userFirstName
+  );
+
+  useEffect(() => {
+    dispatch(fetchAndFillAllUserData());
+    dispatch(clearDate());
+  }, []);
+
   function handleDatePicker() {
-    if (month && year) {
-      dispatch(selectMonth(month));
-      dispatch(selectYear(year));
-      dispatch(selectDays(new Date(year, month, 0).getDate()));
+    if (CurrentMonth && CurrentYear) {
+      const days = new Date(CurrentYear, CurrentMonth, 0).getDate();
+
+      dispatch(
+        setCurrentDate({
+          month: CurrentMonth,
+          year: CurrentYear,
+          days: days,
+        })
+      );
+
+      router.push("/time-tracker");
     }
   }
   return (
     <div className="flex flex-col items-center justify-center h-full w-full">
-      <Navbar isAuth={true} userLogin={userLogin || ""} />
-      <div className="flex flex-col  justify-center h-full gap-2 max-w-[80%] md:w-full w-[350px] pt-32">
-        <div className=" flex  ">
+      <Navbar isAuth={true} userName={userFirstName ?? ""} />
+      <div className="flex flex-col justify-center h-full gap-2 max-w-[80%] md:w-full w-[350px] pt-32">
+        <div className="flex">
           <Clock className="w-6 h-6 mr-2" /> Moje Godziny
         </div>
         <Separator />
@@ -54,13 +74,13 @@ export default function Dashboard() {
                 align="start"
               >
                 <YearPicker
-                  onSelect={(year) => {
-                    setYear(year);
+                  onSelect={(CurrentYear) => {
+                    setCurrentYear(CurrentYear);
                   }}
                 />
                 <MonthPicker
                   onSelect={(monthIndex) => {
-                    setMonth(monthIndex + 1);
+                    setCurrentMonth(monthIndex + 1);
                   }}
                 />
                 <Button
@@ -73,14 +93,7 @@ export default function Dashboard() {
               </PopoverContent>
             </Popover>
           </div>
-          {numbers.map((num) => (
-            <div
-              key={num}
-              className="bg-[#157F1F] p-6 rounded w-32 h-18 text-center"
-            >
-              MAJ
-            </div>
-          ))}
+          <MonthList />
         </div>
       </div>
     </div>

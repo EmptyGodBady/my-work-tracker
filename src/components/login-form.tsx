@@ -11,12 +11,10 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import Link from "next/link";
 import { toast } from "sonner";
-import { login } from "@/store/userSlice";
-import { useDispatch } from "react-redux";
 
 export default function LoginForm() {
-  const dispatch = useDispatch();
   const router = useRouter();
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
@@ -26,21 +24,22 @@ export default function LoginForm() {
       login: formData.get("login"),
       password: formData.get("password"),
     };
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    if (res.ok) {
-      console.log(res);
-      form.reset();
-      toast("Zalogowano");
-      router.push("/dashboard");
-      dispatch(login(data.login as string));
-    } else {
-      console.log(res);
-      const json = await res.json();
-      toast("Wszystkie pola są wymagane");
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        form.reset();
+        toast.success("Zalogowano");
+        router.push("/dashboard");
+      } else {
+        toast.error("Wszystkie pola są wymagane");
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
   return (
@@ -49,7 +48,7 @@ export default function LoginForm() {
         <CardTitle>Zaloguj się</CardTitle>
         <CardAction>
           <Button variant="link" className="text-white" asChild>
-            <Link href="/">Zarejestruj się</Link>
+            <Link href="/registration">Zarejestruj się</Link>
           </Button>
         </CardAction>
       </CardHeader>
