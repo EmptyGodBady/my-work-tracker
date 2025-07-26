@@ -3,8 +3,8 @@ import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
 import thunk from "redux-thunk";
 
-import userReducer from "@/store/userSlice";
-import dateReducer from "@/store/dateSlice";
+import userReducer from "@/store/user/userSlice";
+import dateReducer from "@/store/date/dateSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,

@@ -2,9 +2,10 @@ import React from "react";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { logout } from "@/store/userSlice";
+import { logout } from "@/store/user/userSlice";
 import { Button } from "./ui/button";
-import { clearDate } from "@/store/dateSlice";
+import { clearDate } from "@/store/date/dateSlice";
+import { ROOT_ROUTES } from "@/config/routes";
 
 export default function logoutButton() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function logoutButton() {
       toast.success("Wylogowano");
       dispatch(logout());
       dispatch(clearDate());
-      router.push("/");
+      router.push(ROOT_ROUTES.login);
     } catch (error) {
       console.log(error);
     }

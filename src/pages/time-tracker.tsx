@@ -1,71 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/navbar";
 import { Input } from "@/components/ui/input";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-
-interface DayEntry {
-  day: number;
-  hours: string;
-  comment: string;
-}
+import { selectUser } from "@/store/user/selectors";
+import { selectDate, selectMonthRecord } from "@/store/date/selectors";
+import { DateState } from "@/store/date/dateSlice";
+import fetchExistingData from "@/store/date/thunks/fetchExistingData";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 
 export default function TimeTable() {
-  const [data, setData] = useState<DayEntry[]>([]);
-  const [hoursSummary, setHoursSummary] = useState(0);
+  const [inputData, setInputData] = useState<DateState["monthRecord"]>(null);
 
-  const user = useSelector((state: RootState) => state.user);
-  const date = useSelector((state: RootState) => state.date);
+  const user = useSelector(selectUser);
+  const date = useSelector(selectDate);
+  const monthRecord = useAppSelector(selectMonthRecord);
 
-  const buildInitialData = (existing: DayEntry[] = []) => {
-    const parsedDays = date.days || 0;
-    return Array.from({ length: parsedDays }, (_, i) => {
-      const day = i + 1;
-      const existingEntry = existing.find((e: any) => e.day === day);
-      return {
-        day,
-        hours: existingEntry?.hours?.toString() || "",
-        comment: existingEntry?.comment || "",
-      };
-    });
-  };
-
-  useEffect(() => {
-    const fetchExistingData = async () => {
-      try {
-        if (!user.userId || !date.month || !date.year) return;
-
-        const res = await fetch(
-          `/api/work-hours/set-work-hours?userId=${user.userId}&month=${date.month}&year=${date.year}`
-        );
-        if (!res.ok) throw new Error("Błąd przy pobieraniu danych");
-        const existing = await res.json();
-
-        setData(buildInitialData(existing));
-      } catch (error) {
-        console.error("Fetch error:", error);
-        setData(buildInitialData([]));
-      }
-    };
-
-    if (date.days && user.userId) {
-      fetchExistingData();
-    }
-  }, [date.days, date.month, date.year, user.userId]);
-
-  useEffect(() => {
-    if (date.days) {
-      setData(buildInitialData());
-    }
-  }, [date.days]);
+  const dispatch = useAppDispatch();
 
   const handleChange = (
     index: number,
     key: "hours" | "comment",
     value: string
   ) => {
-    const newData = [...data];
+    if (!inputData) return;
+
+    const newData = [...inputData];
 
     if (key === "hours") {
       newData[index].hours = value;
@@ -73,11 +33,11 @@ export default function TimeTable() {
       newData[index].comment = value;
     }
 
-    setData(newData);
+    setInputData(newData);
   };
 
   const handleSubmit = async () => {
-    const transformedData = data.map((entry) => ({
+    const transformedData = inputData?.map((entry) => ({
       ...entry,
       hours: parseFloat(entry.hours) || 0,
     }));
@@ -99,14 +59,21 @@ export default function TimeTable() {
       alert("Błąd przy zapisie.");
     }
   };
-  useEffect(() => {
-    const total = data.reduce((sum, entry) => {
+  const hoursSummary = useMemo(() => {
+    const total = inputData?.reduce((sum, entry) => {
       const hours = parseFloat(entry.hours);
       return sum + (isNaN(hours) ? 0 : hours);
     }, 0);
 
-    setHoursSummary(total);
-  }, [data]);
+    return total;
+  }, [inputData]);
+  useEffect(() => {
+    setInputData(monthRecord);
+  }, [monthRecord]);
+
+  useEffect(() => {
+    dispatch(fetchExistingData());
+  }, [date.days]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full min-h-screen bg-gradient-to-br from-green-200 via-green-100 to-green-300">
@@ -124,7 +91,7 @@ export default function TimeTable() {
           </div>
         </div>
         <div className="w-full overflow-x-auto">
-          {data.map((entry, i) => (
+          {inputData?.map((entry, i) => (
             <div
               key={entry.day}
               className="flex w-full min-w-[340px] items-center border-b last:border-b-0 bg-white/40 hover:bg-green-100/60 transition rounded-xl my-1 shadow-sm"
@@ -166,7 +133,7 @@ export default function TimeTable() {
             <p>{hoursSummary} godzin</p>
           </div>
           <Button className="mt-6 w-1/3 py-2  sm:py-3 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white font-bold rounded-xl shadow-lg/30 hover:scale-105 hover:from-green-500 hover:to-green-700 transition transform backdrop-blur-md border border-white/30 text-sm sm:text-lg">
-            Wyszlij
+            Pobierz
           </Button>
         </div>
       </div>

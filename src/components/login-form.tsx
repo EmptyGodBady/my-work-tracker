@@ -11,6 +11,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import Link from "next/link";
 import { toast } from "sonner";
+import { ROOT_ROUTES } from "@/config/routes";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function LoginForm() {
       if (res.ok) {
         form.reset();
         toast.success("Zalogowano");
-        router.push("/dashboard");
+        router.push(ROOT_ROUTES.dashboard);
       } else {
         toast.error("Wszystkie pola są wymagane");
       }
