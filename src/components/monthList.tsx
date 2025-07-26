@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { setDays, setMonth, setYear } from "@/store/dateSlice";
+import { setDays, setMonth, setYear } from "@/store/date/dateSlice";
 import { Button } from "@/components/ui/button";
+import { ROOT_ROUTES } from "@/config/routes";
 
 interface MonthItem {
   month: number;
@@ -34,7 +35,7 @@ export default function MonthList() {
     dispatch(setMonth(month));
     dispatch(setYear(year));
     dispatch(setDays(new Date(year, month, 0).getDate()));
-    router.push("/time-tracker");
+    router.push(ROOT_ROUTES["time-tracker"]);
   };
 
   return (

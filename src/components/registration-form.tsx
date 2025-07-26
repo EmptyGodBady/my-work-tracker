@@ -12,6 +12,7 @@ import { Label } from "./ui/label";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
+import { ROOT_ROUTES } from "@/config/routes";
 
 export default function RegistrationForm() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function RegistrationForm() {
     if (res.ok) {
       form.reset();
       toast.success("Zarejestrowano");
-      router.push("/dashboard");
+      router.push(ROOT_ROUTES.dashboard);
     } else {
       toast.error("Wszystkie pola są wymagane");
     }
