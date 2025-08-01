@@ -150,10 +150,7 @@ export default function TimeTable() {
         </div>
       </div>
       {hoursSummary && (
-        <div
-          ref={targetRef}
-          className="text-black z-[-5] absolute overflow-hidden"
-        >
+        <div ref={targetRef} className="text-black z-[-1]">
           <PDFGenerator hoursSummary={hoursSummary} />
         </div>
       )}
