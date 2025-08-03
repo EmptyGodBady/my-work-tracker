@@ -16,3 +16,7 @@ export const selectMonthRecord = createDraftSafeSelector(
   selectRoot,
   (state): DateState["monthRecord"] => state.date.monthRecord
 );
+export const selectHoursSummary = createDraftSafeSelector(
+  selectRoot,
+  (state) => state.date.hoursSummary
+);
