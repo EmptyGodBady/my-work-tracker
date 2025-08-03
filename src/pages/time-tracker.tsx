@@ -5,23 +5,21 @@ import { Input } from "@/components/ui/input";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/user/selectors";
 import { selectDate, selectMonthRecord } from "@/store/date/selectors";
-import { DateState } from "@/store/date/dateSlice";
+import { DateState, setHoursSummary } from "@/store/date/dateSlice";
 import fetchExistingData from "@/store/date/thunks/fetchExistingData";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { useRef } from "react";
-import generatePDF from "react-to-pdf";
-import PDFGenerator from "@/components/pdf-generator";
+import { useRouter } from "next/router";
 
 export default function TimeTable() {
   const [inputData, setInputData] = useState<DateState["monthRecord"]>(null);
-
-  const targetRef = useRef<HTMLDivElement>(null);
 
   const user = useSelector(selectUser);
   const date = useSelector(selectDate);
   const monthRecord = useAppSelector(selectMonthRecord);
 
   const dispatch = useAppDispatch();
+
+  const router = useRouter();
 
   const handleChange = (
     index: number,
@@ -138,25 +136,16 @@ export default function TimeTable() {
             <p>{hoursSummary} godzin</p>
           </div>
           <Button
-            onClick={() =>
-              generatePDF(targetRef, {
-                filename: `Ewidencja liczby godzin ${user.userFirstName} ${user.userLastName}.pdf`,
-              })
-            }
+            onClick={() => {
+              dispatch(setHoursSummary(hoursSummary ?? null));
+              router.push("/download");
+            }}
             className="mt-6 w-1/3 py-2  sm:py-3 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white font-bold rounded-xl shadow-lg/30 hover:scale-105 hover:from-green-500 hover:to-green-700 transition transform backdrop-blur-md border border-white/30 text-sm sm:text-lg"
           >
             Pobierz
           </Button>
         </div>
       </div>
-      {hoursSummary && (
-        <div
-          ref={targetRef}
-          className="text-black z-[-5] absolute overflow-hidden"
-        >
-          <PDFGenerator hoursSummary={hoursSummary} />
-        </div>
-      )}
     </div>
   );
 }

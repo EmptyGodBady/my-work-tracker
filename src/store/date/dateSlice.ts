@@ -5,6 +5,7 @@ export interface DateState {
   year: number | null;
   days: number | null;
   hours: number | null;
+  hoursSummary: number | null;
   monthRecord: DayEntry[] | null;
 }
 
@@ -19,6 +20,7 @@ const initialState: DateState = {
   year: null,
   days: null,
   hours: null,
+  hoursSummary: null,
   monthRecord: null,
 };
 
@@ -41,12 +43,16 @@ export const dateSlice = createSlice({
     setMonthRecord(state, action: PayloadAction<DateState["monthRecord"]>) {
       state.monthRecord = action.payload;
     },
+    setHoursSummary(state, action: PayloadAction<DateState["hoursSummary"]>) {
+      state.hoursSummary = action.payload;
+    },
     clearDate(state) {
       state.month = null;
       state.year = null;
       state.days = null;
       state.hours = null;
       state.monthRecord = null;
+      state.hoursSummary = null;
     },
   },
 });
@@ -58,5 +64,6 @@ export const {
   clearDate,
   setHours,
   setMonthRecord,
+  setHoursSummary,
 } = dateSlice.actions;
 export default dateSlice.reducer;
