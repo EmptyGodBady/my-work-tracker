@@ -39,7 +39,7 @@ export default function PDFGenerator({ hoursSummary }: Props) {
         <p>
           Miesiąc: {months[date.month ?? 0]} {date.year}r.
         </p>
-        <p className="capitalize">
+        <p className="capitalize mb-2">
           Nazwisko i imię Zleceniobiorcy: {user.userFirstName}{" "}
           {user.userLastName}
         </p>
