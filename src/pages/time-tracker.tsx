@@ -29,13 +29,13 @@ export default function TimeTable() {
     if (!inputData) return;
 
     const newData = [...inputData];
-
+    const updatedEntry = { ...newData[index] };
     if (key === "hours") {
-      newData[index].hours = value;
+      updatedEntry.hours = value;
     } else if (key === "comment") {
-      newData[index].comment = value;
+      updatedEntry.comment = value;
     }
-
+    newData[index] = updatedEntry;
     setInputData(newData);
   };
 
@@ -71,7 +71,12 @@ export default function TimeTable() {
     return total;
   }, [inputData]);
   useEffect(() => {
-    setInputData(monthRecord);
+    if (monthRecord) {
+      // clone to avoid mutating frozen Redux state objects
+      setInputData(monthRecord.map((entry) => ({ ...entry })));
+    } else {
+      setInputData(null);
+    }
   }, [monthRecord]);
 
   useEffect(() => {
@@ -146,7 +151,6 @@ export default function TimeTable() {
           </Button>
         </div>
       </div>
-
     </div>
   );
 }
